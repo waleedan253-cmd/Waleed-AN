@@ -50,7 +50,7 @@ const TECH_BADGES = [
 // ------------------------------------------------------------
 const STATS = [
   { value: "2", label: "Year Professional Experience" },
-  { value: "4+", label: "Companies Worked With" },
+  { value: "3+", label: "Companies Worked With" },
   { value: "3+", label: "AI SaaS Products Shipped" },
 ];
 
