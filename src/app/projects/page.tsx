@@ -249,7 +249,7 @@ export default function ProjectsPage() {
             {[
               { value: projects.length || "—", label: "Total Projects" },
               { value: "3+", label: "AI Products" },
-              { value: "2", label: "Years Building" },
+              { value: "1.5+", label: "Years Building" },
             ].map((stat) => (
               <div key={stat.label} style={{ textAlign: "center" }}>
                 <div

@@ -49,7 +49,7 @@ const TECH_BADGES = [
 // Real stats — honest numbers from resume timeline
 // ------------------------------------------------------------
 const STATS = [
-  { value: "2", label: "Year Professional Experience" },
+  { value: "1.5+", label: "Year Professional Experience" },
   { value: "3+", label: "Companies Worked With" },
   { value: "3+", label: "AI SaaS Products Shipped" },
 ];
