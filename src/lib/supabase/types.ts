@@ -1,4 +1,8 @@
-// types/database.types.ts
+// ============================================================
+// WALEED AN — Supabase Database Types
+// Single source of truth for Database schema
+// ============================================================
+
 export type Database = {
   public: {
     Tables: {

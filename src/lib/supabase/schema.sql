@@ -229,3 +229,30 @@ insert into public.projects (
 
 -- Mark message as read:
 -- update contact_messages set read = true where id = 'your-uuid-here';
+
+-- Run in Supabase SQL Editor
+ALTER TABLE projects 
+RENAME COLUMN live_demo_url TO live_url;-- Check bucket was created
+SELECT id, name, public, file_size_limit 
+FROM storage.buckets 
+WHERE id = 'project-images';
+
+-- Check policies were created
+SELECT policyname, cmd 
+FROM pg_policies 
+WHERE tablename = 'objects' 
+AND policyname LIKE '%project images%';
+-- Run in Supabase SQL Editor
+ALTER TABLE projects 
+RENAME COLUMN live_demo_url TO live_url;
+
+-- OR if column doesn't exist yet:
+ALTER TABLE projects 
+ADD COLUMN IF NOT EXISTS live_url TEXT;-- Set user as admin in auth.users metadata
+UPDATE auth.users
+SET raw_user_meta_data = jsonb_set(
+  COALESCE(raw_user_meta_data, '{}'),
+  '{role}',
+  '"admin"'
+)
+WHERE id = '2131d651-d368-44e0-abc1-eb51b4db7526';

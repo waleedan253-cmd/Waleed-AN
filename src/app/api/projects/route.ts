@@ -128,10 +128,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ✅ Insert — live_url matches renamed column
-    const { data, error } = await supabase
+    const supabaseAny = supabase as any;
+    const { data, error } = await supabaseAny
       .from("projects")
-
       .insert({
         title: body.title.trim(),
         description: body.description.trim(),

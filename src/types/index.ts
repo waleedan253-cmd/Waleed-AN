@@ -1,50 +1,51 @@
 // ============================================================
 // WALEED AN — Portfolio TypeScript Interfaces
 // ============================================================
+// ✅ Import Database ONLY from its single source
+// ✅ Never define or re-export Database here
+// ============================================================
+
+import type { Database } from "../lib/supabase/types";
 
 // ------------------------------------------------------------
-// PROJECT — Core data model (stored in Supabase)
+// DERIVED SUPABASE TYPES
 // ------------------------------------------------------------
-import type { Database } from "../lib/supabase/client";
+export type UpdateProjectInput =
+  Database["public"]["Tables"]["projects"]["Update"];
 
+// ------------------------------------------------------------
+// PROJECT
+// -------------------------------------- ----------------------
 export interface Project {
-  id: string; // UUID from Supabase
-  title: string; // Project name
-  description: string; // Full description
-  short_description: string; // Card preview (max 120 chars)
-  image_url: string; // Supabase Storage public URL
-  live_url?: string | null; // Optional live link
-  github_url?: string | null; // Optional GitHub link
-  tech_stack: string[]; // ['Next.js', 'Claude API', ...]
-  category: ProjectCategory; // For filtering
-  published: boolean; // Draft vs live
-  featured: boolean; // Show on homepage
-  published_date: string; // ISO date string
-  created_at: string; // Auto by Supabase
-  updated_at: string; // Auto by Supabase
+  id: string;
+  title: string;
+  description: string;
+  short_description: string;
+  image_url: string;
+  live_url?: string | null;
+  github_url?: string | null;
+  tech_stack: string[];
+  category: ProjectCategory;
+  published: boolean;
+  featured: boolean;
+  published_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
-// Project categories matching Waleed's actual work
 export type ProjectCategory =
-  | "ai-saas" // AI-powered SaaS products
-  | "fullstack" // Full-stack web apps
-  | "frontend" // UI/UX focused
-  | "erp-pos" // ERP / POS systems
-  | "api-integration"; // API & backend work
+  | "ai-saas"
+  | "fullstack"
+  | "frontend"
+  | "erp-pos"
+  | "api-integration";
 
-// For creating a new project (no auto fields yet)
 export type CreateProjectInput = Omit<
   Project,
   "id" | "created_at" | "updated_at"
 >;
-
-// For updating (all fields optional except id)
-export type UpdateProjectInput = Partial<CreateProjectInput> & {
-  id: string;
-};
-
 // ------------------------------------------------------------
-// AI ASSISTANT — Chat between visitor and Waleed's AI
+// AI ASSISTANT
 // ------------------------------------------------------------
 export interface ChatMessage {
   id: string;
@@ -55,7 +56,7 @@ export interface ChatMessage {
 
 export interface AssistantRequest {
   message: string;
-  history: ChatMessage[]; // Conversation context
+  history: ChatMessage[];
 }
 
 export interface AssistantResponse {
@@ -72,7 +73,7 @@ export interface ContactFormData {
   email: string;
   subject: string;
   message: string;
-  budget?: string; // Optional for client inquiries
+  budget?: string;
 }
 
 export interface ContactResponse {
@@ -98,36 +99,30 @@ export interface AuthState {
 // ------------------------------------------------------------
 // UI STATE TYPES
 // ------------------------------------------------------------
-
-// Generic API response wrapper
 export interface ApiResponse<T> {
   data: T | null;
   error: string | null;
   success: boolean;
 }
 
-// For project list page filters
 export interface ProjectFilters {
   category?: ProjectCategory | "all";
   featured?: boolean;
   search?: string;
 }
 
-// Image upload response from Supabase Storage
 export interface UploadResult {
   url: string;
   path: string;
   error?: string;
 }
 
-// Navbar link shape
 export interface NavLink {
   label: string;
   href: string;
   external?: boolean;
 }
 
-// Skill item for About section
 export interface Skill {
   name: string;
   category: SkillCategory;
@@ -136,7 +131,6 @@ export interface Skill {
 
 export type SkillCategory = "frontend" | "backend" | "ai-llm" | "tools";
 
-// Timeline item for experience section
 export interface Experience {
   company: string;
   role: string;

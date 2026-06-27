@@ -110,7 +110,7 @@ export async function PUT(
     }
 
     // Parse body
-    let body: Partial<UpdateProjectInput>;
+    let body: UpdateProjectInput;
     try {
       body = await req.json();
     } catch {
@@ -120,11 +120,10 @@ export async function PUT(
       );
     }
 
-    // Prevent updating protected fields
-    const { id: _id, created_at, ...safeBody } = body as any;
+    const rawBody = body as UpdateProjectInput & { id?: string };
+    delete (rawBody as Record<string, unknown>).id;
 
-    // short_description length check
-    if (safeBody.short_description && safeBody.short_description.length > 160) {
+    if (rawBody.short_description && rawBody.short_description.length > 160) {
       return NextResponse.json(
         {
           success: false,
@@ -136,7 +135,7 @@ export async function PUT(
     }
 
     // Valid category check if provided
-    if (safeBody.category) {
+    if (rawBody.category) {
       const validCategories = [
         "ai-saas",
         "fullstack",
@@ -144,7 +143,7 @@ export async function PUT(
         "erp-pos",
         "api-integration",
       ];
-      if (!validCategories.includes(safeBody.category)) {
+      if (!validCategories.includes(rawBody.category)) {
         return NextResponse.json(
           { success: false, error: "Invalid category", data: null },
           { status: 400 },
@@ -152,17 +151,16 @@ export async function PUT(
       }
     }
 
-    // Trim string fields if present
-    if (safeBody.title) safeBody.title = safeBody.title.trim();
-    if (safeBody.description)
-      safeBody.description = safeBody.description.trim();
-    if (safeBody.short_description)
-      safeBody.short_description = safeBody.short_description.trim();
+    if (rawBody.title) rawBody.title = rawBody.title.trim();
+    if (rawBody.description) rawBody.description = rawBody.description.trim();
+    if (rawBody.short_description)
+      rawBody.short_description = rawBody.short_description.trim();
 
-    // ✅ Update in Supabase — uncommented and working
-    const { data, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabaseAny = supabase as any;
+    const { data, error } = await supabaseAny
       .from("projects")
-      .update(safeBody)
+      .update(rawBody)
       .eq("id", id)
       .select()
       .single();
@@ -204,7 +202,9 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const supabase = getSupabaseServerClient();
+    const supabase = getSupabaseServerClient() as ReturnType<
+      typeof import("@supabase/supabase-js").createClient
+    >;
 
     // ✅ Auth check — now reads Bearer token from header
     const user = await requireAuth(req);
